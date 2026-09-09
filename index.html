@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>零用金</title>
+<style>
+:root{--bg:#f5f5f7;--card:#fff;--text:#111;--sub:#777;--line:#e6e6ea;--danger:#d93025}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC",sans-serif}
+.app{max-width:600px;margin:auto;padding:calc(env(safe-area-inset-top) + 24px) 20px 100px;text-align:center}
+
+
+
+.rabbit-scene{
+  position:relative;height:82px;margin:14px -6px 14px;overflow:hidden;
+  border:1px solid #eee8e1;border-radius:18px;background:#fffdf9;
+}
+.scene-path{position:absolute;left:24px;right:24px;top:47px;border-top:2px dashed #ded6cc}
+.carrot-station,.home-station{
+  position:absolute;top:15px;width:54px;text-align:center;color:#8b7a6b;font-size:10px;font-weight:600
+}
+.carrot-station{left:14px}.home-station{right:12px}
+.carrot-icon{font-size:26px;line-height:30px}.home-icon{font-size:27px;line-height:30px}
+.rabbit-runner{
+  position:absolute;top:18px;left:74px;width:42px;height:42px;z-index:4;
+  animation:rabbitRoute 12s linear infinite;
+}
+.rabbit-character{position:relative;width:42px;height:42px;animation:softWalk .38s ease-in-out infinite alternate}
+.r-ear{position:absolute;width:9px;height:20px;top:0;background:#9a684b;border-radius:10px;transform-origin:bottom}
+.r-ear:after{content:"";position:absolute;inset:4px 2px;background:#e8b5aa;border-radius:8px}
+.r-ear.one{left:12px;transform:rotate(-8deg)}.r-ear.two{left:22px;transform:rotate(7deg)}
+.r-head{position:absolute;left:7px;top:13px;width:28px;height:23px;background:#a87352;border-radius:48% 48% 50% 50%}
+.r-face{position:absolute;left:9px;top:7px;width:4px;height:4px;border-radius:50%;background:#392c25;box-shadow:10px 0 0 #392c25}
+.r-nose{position:absolute;left:13px;top:14px;width:4px;height:3px;border-radius:50%;background:#d58f88}
+.r-body{position:absolute;left:8px;top:27px;width:25px;height:14px;background:#a87352;border-radius:50%}
+.r-tail{position:absolute;left:3px;top:29px;width:9px;height:9px;border-radius:50%;background:#ead9ca}
+.r-carrot{position:absolute;right:-8px;bottom:0;font-size:18px;opacity:0;animation:carryCarrot 12s linear infinite}
+.scene-status{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);font-size:10px;color:#9b8d81;white-space:nowrap}
+@keyframes rabbitRoute{
+  0%{left:72px;transform:scaleX(-1)}
+  14%{left:32px;transform:scaleX(-1)}
+  20%{left:32px;transform:scaleX(-1)}
+  24%{left:32px;transform:scaleX(1)}
+  66%{left:calc(100% - 100px);transform:scaleX(1)}
+  72%{left:calc(100% - 100px);transform:scaleX(1)}
+  76%{left:calc(100% - 100px);transform:scaleX(-1)}
+  96%{left:72px;transform:scaleX(-1)}
+  100%{left:72px;transform:scaleX(-1)}
+}
+@keyframes softWalk{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-2px) rotate(1deg)}}
+@keyframes carryCarrot{0%,21%{opacity:0}25%,70%{opacity:1}74%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+ .rabbit-runner,.rabbit-character,.r-carrot{animation:none}
+ .rabbit-runner{left:50%;transform:translateX(-50%)}
+}
+
+}
+.rabbit-carrot{opacity:1}}
+.rabbit-runner{left:12px}}h1{text-align:center;font-size:21px;margin:0 0 32px}
+.label{text-align:center;color:var(--sub);font-size:15px}.balance{text-align:center;font-size:52px;font-weight:800;letter-spacing:-2px;margin:8px 0}.daily{text-align:center;color:var(--sub);margin-bottom:28px}.add,.primary{width:100%;border:0;border-radius:18px;padding:18px;background:#111;color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+.card{background:var(--card);border-radius:20px;padding:16px;margin-top:15px}.section{font-size:17px;font-weight:700;margin:25px 2px 10px}
+.item{display:flex;align-items:center;justify-content:space-between;padding:14px 2px;border-bottom:1px solid var(--line)}.item:last-child{border:0}.sub{font-size:13px;color:var(--sub);margin-top:3px}.amount{color:var(--danger);font-weight:650}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#fffffff0;backdrop-filter:blur(15px);border-top:1px solid var(--line);padding:12px 0 calc(12px + env(safe-area-inset-bottom));text-align:center}.nav button{border:0;background:none;font-size:14px;color:#777;margin:0 38px}.nav button.active{color:#111;font-weight:700}
+.hidden{display:none!important}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:5;align-items:flex-end}.modal.show{display:flex}.sheet{width:100%;max-width:600px;margin:auto;background:var(--bg);border-radius:26px 26px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 22px}.formlabel{font-size:14px;color:var(--sub);margin-top:8px}input,select{width:100%;padding:15px;margin:6px 0 14px;border:1px solid var(--line);border-radius:13px;background:#fff;font-size:16px}.secondary{width:100%;border:0;background:none;padding:16px;font-size:16px;color:#666}
+.outline-btn{width:100%;border:1px solid #d9d9df;background:#fff;border-radius:13px;padding:15px;font-size:16px;color:#333;cursor:pointer}.linkbtn{border:0;background:none;padding:0 0 14px;color:#555;font-size:14px}
+.setting-row{padding:15px 0;border-bottom:1px solid var(--line)}.setting-row:last-child{border:0}.setting-row label{display:block;color:var(--sub);font-size:14px;margin-bottom:7px}.danger{color:var(--danger)!important}
+.welcome{text-align:center;padding-top:8vh}.welcome h1{font-size:30px;margin-bottom:10px}.welcome p{color:var(--sub);margin-bottom:35px}.history{font-size:12px;color:var(--sub);margin-top:5px}
+
+/* Home hero alignment */
+h1{width:100%;text-align:center;margin-left:auto;margin-right:auto}
+
+/* 我的家：簡潔房屋圖示 */
+.home-station{width:68px !important;right:8px !important}
+.home-icon{
+  position:relative;
+  width:42px;
+  height:34px;
+  margin:8px auto 5px;
+  font-size:0 !important;
+  line-height:0;
+}
+.home-roof{
+  position:absolute;
+  left:2px;
+  top:0;
+  width:38px;
+  height:18px;
+  background:#a96f52;
+  clip-path:polygon(50% 0,100% 100%,0 100%);
+}
+.home-chimney{
+  position:absolute;
+  right:7px;
+  top:5px;
+  width:6px;
+  height:9px;
+  background:#c89570;
+  border-radius:1px 1px 0 0;
+  z-index:1;
+}
+.home-wall{
+  position:absolute;
+  left:6px;
+  bottom:0;
+  width:30px;
+  height:20px;
+  background:#f1dfc4;
+  border:1.5px solid #76503d;
+  border-radius:2px 2px 4px 4px;
+  box-sizing:border-box;
+}
+.home-door{
+  position:absolute;
+  left:18px;
+  bottom:0;
+  width:7px;
+  height:11px;
+  background:#8c5d47;
+  border-radius:4px 4px 0 0;
+}
+.home-window{
+  position:absolute;
+  left:11px;
+  bottom:9px;
+  width:5px;
+  height:5px;
+  background:#b9d7dd;
+  border:1px solid #76503d;
+  border-radius:1px;
+}
+.home-garden{
+  position:absolute;
+  right:-2px;
+  bottom:0;
+  width:12px;
+  height:9px;
+}
+.home-garden:before{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:0;
+  width:7px;
+  height:7px;
+  background:#7da96f;
+  border-radius:50%;
+  box-shadow:5px 1px 0 #92b982;
+}
+.home-garden:after{
+  content:"";
+  position:absolute;
+  left:4px;
+  bottom:5px;
+  width:3px;
+  height:3px;
+  background:#e89aa2;
+  border-radius:50%;
+}
+
+
+/* 零用金累積方式 */
+.budget-mode{display:flex;gap:8px;margin:10px 0 14px}
+.budget-mode button{
+  flex:1;border:1px solid var(--line);background:#fff;color:var(--sub);
+  border-radius:14px;padding:12px 8px;font-size:14px;font-weight:700;cursor:pointer
+}
+.budget-mode button.active{background:#111;color:#fff;border-color:#111}
+.budget-preview{
+  margin-top:12px;padding:12px;border-radius:14px;
+  background:#f7f7f7;color:var(--sub);font-size:13px;line-height:1.8
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+<div id="welcome" class="welcome hidden">
+<h1>零用金</h1><p>每天累積，花掉再扣除。</p>
+<div class="card" style="text-align:left">
+<div class="formlabel">累積方式</div>
+<div class="budget-mode" id="firstBudgetMode">
+  <button type="button" class="active" onclick="setFirstBudgetMode('monthly')">每月零用金</button>
+  <button type="button" onclick="setFirstBudgetMode('daily')">每日自訂</button>
+</div>
+<div id="firstMonthlyWrap">
+  <div class="formlabel">每月零用金</div><input id="firstMonthly" type="number" inputmode="numeric" placeholder="例如 15000" oninput="updateFirstBudgetPreview()">
+</div>
+<div id="firstDailyWrap" class="hidden">
+  <div class="formlabel">每日自動累積金額</div><input id="firstDaily" type="number" inputmode="numeric" placeholder="例如 500">
+</div>
+<div class="budget-preview" id="firstBudgetPreview">輸入每月零用金後，系統會自動換算每日與每秒累積金額。</div>
+<div class="formlabel">起始日期</div><input id="firstStart" type="date">
+<div class="formlabel">起始餘額（選填）</div><input id="firstInitial" type="number" value="0">
+<button class="primary" onclick="startApp()">開始使用</button>
+</div>
+</div>
+
+<div id="home">
+<h1>零用金</h1>
+
+<div class="label">目前可用</div><div class="balance" id="balance">NT$ 0</div>
+<div class="daily">每日實際累積 <b id="dailyText">NT$ 500</b><br>
+<span id="liveRate" style="font-size:12px;color:#888">正在累積中</span></div>
+<div class="rabbit-scene" aria-label="棕色兔子搬胡蘿蔔回家的動畫">
+  <div class="carrot-station"><div class="carrot-icon">🥕</div>胡蘿蔔</div>
+  <div class="home-station"><div class="home-icon" aria-hidden="true">
+      <span class="home-roof"></span>
+      <span class="home-chimney"></span>
+      <span class="home-wall"></span>
+      <span class="home-door"></span>
+      <span class="home-window"></span>
+      <span class="home-garden"></span>
+    </div>我的家</div>
+  <div class="scene-path"></div>
+  <div class="rabbit-runner">
+    <div class="rabbit-character">
+      <div class="r-ear one"></div><div class="r-ear two"></div>
+      <div class="r-tail"></div><div class="r-head"><div class="r-face"></div><div class="r-nose"></div></div>
+      <div class="r-body"></div><div class="r-carrot">🥕</div>
+    </div>
+  </div>
+  <div class="scene-status">小兔子努力搬運中</div>
+</div>
+<div style="display:flex;gap:10px">
+<button class="add" style="flex:1" onclick="openExpense()">－ 新增消費</button>
+<button class="add" style="flex:1;background:#555" onclick="openIncome()">＋ 新增收入</button>
+</div>
+<div class="section">固定扣款</div>
+<div class="card" id="fixedCard">
+  <div id="fixedSummary" class="sub" style="font-size:15px;line-height:1.8"></div>
+  <button class="outline-btn" onclick="openFixed()">管理固定扣款</button>
+</div>
+<div class="section">想買的東西</div>
+<div class="card" id="wishCard">
+  <div id="wishEmpty" style="text-align:center;color:#777;padding:10px">還沒有設定購買目標</div>
+  <div id="wishContent" class="hidden">
+    <div class="item"><div><b id="wishName"></b><div class="sub" id="wishPrice"></div></div><div id="wishStatus" style="font-size:13px;color:#777"></div></div>
+    <button class="primary" id="buyBtn" onclick="buyWish()" style="margin-top:10px">一鍵扣除並購買</button>
+  </div>
+  <button class="outline-btn" onclick="openWish()" id="wishEditBtn">設定想買的東西</button>
+</div>
+<div class="section">最近紀錄</div><div class="card" id="records"></div>
+</div>
+
+
+<div id="settings" class="hidden">
+<h1>設定</h1>
+<div class="card">
+<div class="formlabel">累積方式</div>
+<div class="budget-mode" id="settingsBudgetMode">
+  <button type="button" onclick="setSettingsBudgetMode('monthly')">每月零用金</button>
+  <button type="button" onclick="setSettingsBudgetMode('daily')">每日自訂</button>
+</div>
+<div id="settingsMonthlyWrap">
+  <div class="setting-row"><label>每月零用金</label><input id="newMonthly" type="number" inputmode="numeric" oninput="updateSettingsBudgetPreview()"></div>
+</div>
+<div id="settingsDailyWrap" class="hidden">
+  <div class="setting-row"><label>每日自動累積金額</label><input id="newDaily" type="number" inputmode="numeric"></div>
+</div>
+<div class="budget-preview" id="settingsBudgetPreview"></div>
+<div class="history" id="rateInfo"></div>
+<button class="primary" onclick="applyBudgetSetting()">套用設定</button>
+</div>
+<div class="section">固定扣款</div>
+<div class="card"><button class="secondary" onclick="openFixed()">管理每月固定扣款</button></div>
+<div class="section">購買目標</div>
+<div class="card"><button class="secondary" onclick="openWish()">設定／修改想買的東西</button></div>
+<div class="section">資料管理</div>
+<div class="card">
+<button class="secondary danger" onclick="confirmReset1()">重新開始／清除所有資料</button>
+</div>
+</div>
+</div>
+
+<div class="nav" id="nav">
+<button id="homeBtn" class="active" onclick="page('home')">⌂<br>零用金</button>
+<button id="settingsBtn" onclick="page('settings')">⚙<br>設定</button>
+</div>
+
+<div class="modal" id="wishModal"><div class="sheet">
+<h2>想買的東西</h2>
+<div class="formlabel">名稱</div><input id="wishNameInput" placeholder="例如 新手機">
+<div class="formlabel">價格</div><input id="wishPriceInput" type="number" inputmode="decimal" placeholder="例如 10000">
+<button class="primary" onclick="saveWish()">儲存</button>
+<button class="secondary danger" id="deleteWishBtn" onclick="deleteWish()">刪除此目標</button>
+<button class="secondary" onclick="closeWish()">取消</button>
+</div></div>
+
+<div class="modal" id="buyConfirm"><div class="sheet" style="text-align:center">
+<h2>確認購買？</h2>
+<p id="buyConfirmText" style="color:#777"></p>
+<button class="primary" onclick="confirmBuy()">確認扣除</button>
+<button class="secondary" onclick="buyConfirm.classList.remove('show')">取消</button>
+</div></div>
+
+<div class="modal" id="fixedModal"><div class="sheet">
+<h2>固定扣款</h2>
+<p style="color:#777;font-size:14px;margin-top:-10px">每月固定支出會平均分攤到每一天扣除。</p>
+<div id="fixedManageList"></div>
+<div class="formlabel">固定扣款名稱</div><input id="fixedNameInput" placeholder="例如 iCloud、Netflix、手機費">
+<div class="formlabel">每月金額</div><input id="fixedMonthlyInput" type="number" inputmode="decimal" placeholder="例如 1000">
+<button class="primary" onclick="addFixed()">新增固定扣款</button>
+<button class="secondary" onclick="closeFixed()">完成</button>
+</div></div>
+
+<div class="modal" id="incomeModal"><div class="sheet">
+<h2>新增收入</h2>
+<div class="formlabel">① 金額</div><input id="incomeAmount" type="number" inputmode="decimal" placeholder="例如 1000">
+<div class="formlabel">② 分類</div>
+<select id="incomeCategory"></select>
+<button class="linkbtn" onclick="manageIncomeCategories()">管理收入分類 ＋／－</button>
+<div class="formlabel">③ 補充說明（選填）</div><input id="incomeNote" placeholder="例如 公司獎金">
+<button class="primary" onclick="addIncome()">確認增加</button>
+<button class="secondary" onclick="closeIncome()">取消</button>
+</div></div>
+<div class="modal" id="incomeCategoryModal"><div class="sheet">
+<h2>管理收入分類</h2><div id="incomeCategoryList"></div>
+<div class="formlabel">新增收入分類</div><input id="newIncomeCategory" placeholder="輸入分類名稱">
+<button class="primary" onclick="addIncomeCategory()">新增分類</button>
+<button class="secondary" onclick="closeIncomeCategories()">完成</button>
+</div></div>
+
+<div class="modal" id="expenseModal"><div class="sheet">
+<h2>新增消費</h2>
+<div class="formlabel">① 金額</div><input id="amount" type="number" inputmode="decimal" placeholder="例如 120">
+<div class="formlabel">② 分類</div><select id="category"></select><button class="linkbtn" onclick="manageCategories()">管理分類 ＋／－</button>
+<div class="formlabel">③ 補充說明（選填）</div><input id="note" placeholder="例如 公司咖啡">
+<button class="primary" onclick="addExpense()">確認扣款</button><button class="secondary" onclick="closeExpense()">取消</button>
+</div></div>
+
+<div class="modal" id="categoryModal"><div class="sheet">
+<h2>管理分類</h2><div id="categoryList"></div>
+<div class="formlabel">新增分類</div><input id="newCategory" placeholder="輸入分類名稱">
+<button class="primary" onclick="addCategory()">新增分類</button><button class="secondary" onclick="closeCategory()">完成</button>
+</div></div>
+
+<div class="modal" id="reset1"><div class="sheet" style="text-align:center">
+<h2>確定要重新開始嗎？</h2><p style="color:#777">所有消費紀錄、累積金額與設定將會清除。</p>
+<button class="primary" onclick="confirmReset2()">繼續</button><button class="secondary" onclick="closeReset()">取消</button>
+</div></div>
+
+<div class="modal" id="reset2"><div class="sheet" style="text-align:center">
+<h2>⚠️ 最後確認</h2><p style="color:#777">此操作無法復原。<br>確定清除所有資料並重新開始？</p>
+<button class="primary" style="background:#d93025" onclick="doReset()">確認清除</button><button class="secondary" onclick="closeReset()">取消</button>
+</div></div>
+
+<script>
+const KEY='allowance_v2';
+let s=JSON.parse(localStorage.getItem(KEY));
+if(s && !s.incomes)s.incomes=[];
+if(s && !s.fixedDeductions)s.fixedDeductions=[];
+if(s && !s.incomeCategories)s.incomeCategories=['額外收入','獎金','退款','禮金','其他'];
+if(s && !s.rates){ // migrate old version
+ s.rates=[{date:s.start||today(),daily:Number(s.daily)||500}];
+ s.categories=s.categories||['飲食','娛樂','購物','交通','其他'];
+ save();
+}
+function today(){return new Date().toISOString().slice(0,10)}
+function save(){localStorage.setItem(KEY,JSON.stringify(s))}
+function daysInclusive(a,b){let x=new Date(a+'T00:00:00'),y=new Date(b+'T00:00:00');return Math.max(0,Math.floor((y-x)/86400000)+1)}
+function earned(){
+ if(!s||!s.rates?.length)return 0;
+ let total=0, now=Date.now();
+ for(let i=0;i<s.rates.length;i++){
+  const r=s.rates[i], next=s.rates[i+1];
+  const start=(i===0 && s.startTimestamp) ? Number(s.startTimestamp) : (r.timestamp ? Number(r.timestamp) : new Date(r.date+'T00:00:00').getTime());
+  const end=next?new Date(next.date+'T00:00:00').getTime():now;
+  if(now<=start) continue;
+  const effectiveEnd=Math.min(end,now);
+  total+=Math.max(0,(effectiveEnd-start)/86400000)*Number(r.daily);
+ }
+ return total;
+}
+function spent(){return s.expenses.reduce((a,e)=>a+Number(e.amount),0)}
+function extraIncome(){return (s.incomes||[]).reduce((a,e)=>a+Number(e.amount),0)}
+function fixedDailyTotal(){
+ return (s.fixedDeductions||[]).reduce((a,x)=>a+(Number(x.monthly)*12/365),0);
+}
+function fixedDeducted(){
+ if(!s?.start)return 0;
+ const start=s.startTimestamp ? Number(s.startTimestamp) : new Date(s.start+'T00:00:00').getTime();
+ const elapsed=Math.max(0,(Date.now()-start)/86400000);
+ return fixedDailyTotal()*elapsed;
+}
+function currentDaily(){return s.rates[s.rates.length-1].daily}
+function balance(){
+ return Number(s.initial||0)+earned()-fixedDeducted()+extraIncome()-spent()
+}
+function fmt(n){return 'NT$ '+Math.round(n).toLocaleString('zh-TW')}
+function updateLiveBalance(){
+ if(!s)return;
+ const el=document.getElementById('balance');
+ if(el) el.textContent='NT$ '+balance().toLocaleString('zh-TW',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+setInterval(updateLiveBalance,1000);
+function render(){
+ if(!s){showWelcome();return}
+ welcome.classList.add('hidden');home.classList.remove('hidden');nav.classList.remove('hidden');
+ balanceEl=document.getElementById('balance');
+ const grossDaily=Number(currentDaily());
+ const fixedDaily=fixedDailyTotal();
+ const netDaily=grossDaily-fixedDaily;
+ dailyText.textContent=fmt(netDaily);
+ liveRate.textContent=`正在累積中 ・ 每秒 +${(netDaily/86400).toFixed(4)} 元`;
+ settingsBudgetMode=s.budgetMode||'daily';
+ if(settingsBudgetMode==='monthly'){
+   newMonthly.value=Number(s.monthlyBudget||0);
+ }else{
+   newDaily.value=grossDaily;
+ }
+ setSettingsBudgetMode(settingsBudgetMode);
+ updateSettingsBudgetPreview();
+ updateLiveBalance();
+ renderWish();
+ renderFixed();
+ rateInfo.textContent='目前已建立 '+s.rates.length+' 段每日金額紀錄。新金額將從今天開始計算，不會回溯影響過去。';
+ renderCategories();
+ let list=[
+ ...s.expenses.map(e=>({...e,type:'expense'})),
+ ...(s.incomes||[]).map(e=>({...e,type:'income'}))
+].sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id).slice(0,15);
+ records.innerHTML=list.length?list.map(e=>{
+ const plus=e.type==='income';
+ return `<div class="item"><div><b>${esc(e.note||e.category)}</b><div class="sub">${e.date}・${esc(e.category)}${plus?'・收入':'・消費'}</div></div><div class="amount" style="color:${plus?'#198754':'var(--danger)'}">${plus?'+':'-'}${fmt(e.amount).replace('NT$ ','')}</div></div>`
+}).join(''):'<div style="text-align:center;color:#777;padding:24px">目前沒有紀錄</div>';
+}
+function showWelcome(){
+ welcome.classList.remove('hidden');home.classList.add('hidden');settings.classList.add('hidden');nav.classList.add('hidden');
+ firstStart.value=today();setFirstBudgetMode('monthly');
+}
+let firstBudgetMode='monthly';
+let settingsBudgetMode='monthly';
+function monthlyToDaily(v){return Number(v)*12/365}
+function budgetPreview(monthly){
+ const daily=monthlyToDaily(monthly), second=daily/86400;
+ return `自動換算：每日約 NT$ ${daily.toFixed(2)} ・ 每秒約 NT$ ${second.toFixed(4)}`;
+}
+function setFirstBudgetMode(mode){
+ firstBudgetMode=mode;
+ document.querySelectorAll('#firstBudgetMode button').forEach(b=>b.classList.toggle('active',b.textContent.includes(mode==='monthly'?'每月':'每日')));
+ firstMonthlyWrap.classList.toggle('hidden',mode!=='monthly');
+ firstDailyWrap.classList.toggle('hidden',mode!=='daily');
+ updateFirstBudgetPreview();
+}
+function updateFirstBudgetPreview(){
+ firstBudgetPreview.textContent=firstBudgetMode==='monthly'
+  ? (Number(firstMonthly.value)>0?budgetPreview(firstMonthly.value):'輸入每月零用金後，系統會自動換算每日與每秒累積金額。')
+  : '每日自訂金額會直接作為每天的累積金額，並自動換算成每秒累積。';
+}
+function startApp(){
+ let d,monthly=0;
+ if(firstBudgetMode==='monthly'){
+   monthly=Number(firstMonthly.value);
+   if(!monthly||monthly<=0)return alert('請設定每月零用金');
+   d=monthlyToDaily(monthly);
+ }else{
+   d=Number(firstDaily.value);
+   if(!d||d<=0)return alert('請設定每日累積金額');
+ }
+ const startDate=firstStart.value||today();
+ const nowTs=Date.now();
+ s={
+   initial:Number(firstInitial.value)||0,start:startDate,startTimestamp:nowTs,
+   rates:[{date:startDate,daily:d,timestamp:nowTs}],
+   budgetMode:firstBudgetMode,monthlyBudget:monthly,
+   categories:['飲食','娛樂','購物','交通','其他'],expenses:[],wish:null,incomes:[],
+   incomeCategories:['額外收入','獎金','退款','禮金','其他'],fixedDeductions:[]
+ };
+ save();render();
+}
+function setSettingsBudgetMode(mode){
+ settingsBudgetMode=mode;
+ document.querySelectorAll('#settingsBudgetMode button').forEach(b=>b.classList.toggle('active',b.textContent.includes(mode==='monthly'?'每月':'每日')));
+ settingsMonthlyWrap.classList.toggle('hidden',mode!=='monthly');
+ settingsDailyWrap.classList.toggle('hidden',mode!=='daily');
+ updateSettingsBudgetPreview();
+}
+function updateSettingsBudgetPreview(){
+ settingsBudgetPreview.textContent=settingsBudgetMode==='monthly'
+  ? (Number(newMonthly.value)>0?budgetPreview(newMonthly.value):'輸入每月零用金後，系統會自動換算每日與每秒累積金額。')
+  : (Number(newDaily.value)>0?`每秒約 +${(Number(newDaily.value)/86400).toFixed(4)} 元`:'輸入每日累積金額。');
+}
+function applyBudgetSetting(){
+ let d,monthly=0;
+ if(settingsBudgetMode==='monthly'){
+   monthly=Number(newMonthly.value);
+   if(!monthly||monthly<=0)return alert('請輸入正確的每月零用金');
+   d=monthlyToDaily(monthly);
+ }else{
+   d=Number(newDaily.value);
+   if(!d||d<=0)return alert('請輸入正確金額');
+ }
+ if(d===Number(currentDaily()) && settingsBudgetMode===(s.budgetMode||'daily')){alert('目前設定沒有變更');return}
+ let last=s.rates[s.rates.length-1];
+ const entry={date:today(),daily:d,timestamp:Date.now()};
+ if(last.date===today()) s.rates[s.rates.length-1]=entry; else s.rates.push(entry);
+ s.budgetMode=settingsBudgetMode;
+ s.monthlyBudget=monthly;
+ save();render();alert('已套用新設定，從現在開始累積。');
+}
+function page(p){
+ home.classList.toggle('hidden',p!=='home');
+ settings.classList.toggle('hidden',p!=='settings');
+ homeBtn.classList.toggle('active',p==='home');
+ settingsBtn.classList.toggle('active',p==='settings');
+}
+function renderCategories(){category.innerHTML=s.categories.map(c=>`<option>${esc(c)}</option>`).join('')}
+function openExpense(){renderCategories();amount.value='';note.value='';expenseModal.classList.add('show');setTimeout(()=>amount.focus(),100)}
+function closeExpense(){expenseModal.classList.remove('show')}
+function addExpense(){let v=Number(amount.value);if(!v||v<=0)return alert('請輸入正確金額');s.expenses.push({id:Date.now(),amount:v,note:note.value.trim(),category:category.value,date:today()});save();closeExpense();render()}
+function renderIncomeCategories(){incomeCategory.innerHTML=s.incomeCategories.map(c=>`<option>${esc(c)}</option>`).join('')}
+function openIncome(){renderIncomeCategories();incomeAmount.value='';incomeNote.value='';incomeModal.classList.add('show');setTimeout(()=>incomeAmount.focus(),100)}
+function closeIncome(){incomeModal.classList.remove('show')}
+function manageIncomeCategories(){renderIncomeCategoryList();incomeCategoryModal.classList.add('show')}
+function closeIncomeCategories(){incomeCategoryModal.classList.remove('show');renderIncomeCategories()}
+function renderIncomeCategoryList(){
+ incomeCategoryList.innerHTML=s.incomeCategories.map((c,i)=>`<div class="item"><span>${esc(c)}</span>${s.incomeCategories.length>1?`<button onclick="deleteIncomeCategory(${i})" style="border:0;background:none;color:#d93025;font-size:15px">刪除</button>`:''}</div>`).join('');
+}
+function addIncomeCategory(){
+ let v=newIncomeCategory.value.trim();
+ if(!v)return;
+ if(s.incomeCategories.includes(v))return alert('已有相同分類');
+ s.incomeCategories.push(v);newIncomeCategory.value='';save();renderIncomeCategoryList();
+}
+function deleteIncomeCategory(i){
+ if(!confirm('確定刪除「'+s.incomeCategories[i]+'」？'))return;
+ s.incomeCategories.splice(i,1);save();renderIncomeCategoryList();
+}
+function addIncome(){
+ let v=Number(incomeAmount.value);
+ if(!v||v<=0)return alert('請輸入正確金額');
+ if(!s.incomes)s.incomes=[];
+ s.incomes.push({id:Date.now(),amount:v,note:incomeNote.value.trim(),category:incomeCategory.value,date:today()});
+ save();closeIncome();render();
+}
+function manageCategories(){renderCategoryList();categoryModal.classList.add('show')}
+function closeCategory(){categoryModal.classList.remove('show');renderCategories()}
+function renderCategoryList(){categoryList.innerHTML=s.categories.map((c,i)=>`<div class="item"><span>${esc(c)}</span>${s.categories.length>1?`<button onclick="deleteCategory(${i})" style="border:0;background:none;color:#d93025;font-size:15px">刪除</button>`:''}</div>`).join('')}
+function addCategory(){let v=newCategory.value.trim();if(!v)return;if(s.categories.includes(v))return alert('已有相同分類');s.categories.push(v);newCategory.value='';save();renderCategoryList()}
+function deleteCategory(i){if(!confirm('確定刪除「'+s.categories[i]+'」？'))return;s.categories.splice(i,1);save();renderCategoryList()}
+function confirmReset1(){reset1.classList.add('show')}
+function confirmReset2(){reset1.classList.remove('show');reset2.classList.add('show')}
+function closeReset(){reset1.classList.remove('show');reset2.classList.remove('show')}
+function doReset(){localStorage.removeItem(KEY);s=null;closeReset();showWelcome()}
+function renderFixed(){
+ const list=s.fixedDeductions||[];
+ const monthly=list.reduce((a,x)=>a+Number(x.monthly),0);
+ const daily=fixedDailyTotal();
+ fixedSummary.innerHTML=list.length
+   ? `每月固定扣款：<b>${fmt(monthly)}</b><br>平均每日扣除：<b>${fmt(daily)}</b>`
+   : '尚未設定固定扣款';
+}
+function openFixed(){
+ renderFixedManage();
+ fixedNameInput.value='';fixedMonthlyInput.value='';
+ fixedModal.classList.add('show');
+}
+function closeFixed(){fixedModal.classList.remove('show');renderFixed()}
+function renderFixedManage(){
+ const list=s.fixedDeductions||[];
+ fixedManageList.innerHTML=list.length?list.map((x,i)=>`<div class="item"><div><b>${esc(x.name)}</b><div class="sub">每月 ${fmt(x.monthly)} ・ 每日約 ${fmt(Number(x.monthly)*12/365)}</div></div><button type="button" onclick="deleteFixed(${i})" style="border:1px solid #f1c7c3;background:#fff;color:#d93025;font-size:15px;padding:9px 14px;border-radius:10px;cursor:pointer">刪除</button></div>`).join(''):'';
+}
+function addFixed(){
+ const name=fixedNameInput.value.trim(),monthly=Number(fixedMonthlyInput.value);
+ if(!name)return alert('請輸入固定扣款名稱');
+ if(!monthly||monthly<=0)return alert('請輸入正確每月金額');
+ if(!s.fixedDeductions)s.fixedDeductions=[];
+ s.fixedDeductions.push({id:Date.now(),name,monthly});
+ save();fixedNameInput.value='';fixedMonthlyInput.value='';renderFixedManage();render();
+}
+function deleteFixed(i){
+ if(!s || !Array.isArray(s.fixedDeductions)) return;
+ if(i < 0 || i >= s.fixedDeductions.length) return;
+ s.fixedDeductions.splice(i,1);
+ save();
+ renderFixedManage();
+ renderFixed();
+}
+function renderWish(){
+ const has=!!s.wish;
+ wishEmpty.classList.toggle('hidden',has);wishContent.classList.toggle('hidden',!has);
+ if(!has){wishEditBtn.textContent='設定想買的東西';return}
+ wishEditBtn.textContent='修改購買目標';
+ wishName.textContent=s.wish.name;wishPrice.textContent='價格 '+fmt(s.wish.price);
+ const diff=Number(s.wish.price)-balance();
+ wishStatus.textContent=diff<=0?'目前零用金足夠購買':'還差 '+fmt(diff);
+ buyBtn.disabled=balance()<Number(s.wish.price);
+ buyBtn.style.opacity=buyBtn.disabled?'.45':'1';
+ buyBtn.textContent=buyBtn.disabled?'目前零用金不足':'一鍵扣除並購買';
+}
+function openWish(){
+ wishNameInput.value=s?.wish?.name||'';wishPriceInput.value=s?.wish?.price||'';
+ deleteWishBtn.classList.toggle('hidden',!s?.wish);wishModal.classList.add('show');
+}
+function closeWish(){wishModal.classList.remove('show')}
+function saveWish(){
+ let n=wishNameInput.value.trim(),v=Number(wishPriceInput.value);
+ if(!n)return alert('請輸入想買的東西');
+ if(!v||v<=0)return alert('請輸入正確價格');
+ s.wish={name:n,price:v};save();closeWish();render();
+}
+function deleteWish(){
+ if(!confirm('確定刪除這個購買目標？'))return;
+ s.wish=null;save();closeWish();render();
+}
+function buyWish(){
+ if(!s.wish||balance()<Number(s.wish.price))return;
+ buyConfirmText.textContent='將扣除 '+fmt(s.wish.price)+' 購買「'+s.wish.name+'」。';
+ buyConfirm.classList.add('show');
+}
+function confirmBuy(){
+ const w={...s.wish};
+ s.expenses.push({id:Date.now(),amount:Number(w.price),note:'購買：'+w.name,category:'購買',date:today()});
+ s.wish=null;save();buyConfirm.classList.remove('show');render();
+}
+function esc(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+render();
+
+</script>
+</body></html>
