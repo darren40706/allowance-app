@@ -171,6 +171,15 @@ h1{width:100%;text-align:center;margin-left:auto;margin-right:auto}
 }
 
 </style>
+
+<!-- PWA / iPhone Home Screen -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#8B5E3C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="零用金">
+<link rel="apple-touch-icon" href="icon-512.png">
+
 </head>
 <body>
 <div class="app">
@@ -618,4 +627,15 @@ function esc(x){return String(x).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;',
 render();
 
 </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(err => {
+      console.log('Service Worker registration failed:', err);
+    });
+  });
+}
+</script>
+
 </body></html>
